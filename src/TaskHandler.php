@@ -36,12 +36,7 @@ class TaskHandler
 
         $this->config = is_array($config) ? $config : [];
 
-        // We want to catch any errors so we have more fine-grained control over
-        // how tasks are retried. Cloud Tasks will retry the task if a 5xx status
-        // is returned. Because we manually manage retries by releasing jobs,
-        // we never want to return a 5xx status as that will result in duplicate
-        // job attempts.
-        rescue(fn () => $this->run($task));
+        $this->run($task);
     }
 
     private function run(IncomingTask $task): void
