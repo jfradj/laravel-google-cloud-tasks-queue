@@ -7,6 +7,8 @@ namespace Stackkit\LaravelGoogleCloudTasksQueue;
 use Error;
 use Google\Cloud\Tasks\V2\Client\CloudTasksClient;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Log\Logger;
+use Illuminate\Support\Facades\Log;
 use Safe\Exceptions\JsonException;
 
 use function Safe\json_decode;
@@ -63,9 +65,13 @@ class IncomingTask
     {
         $config = config('queue.connections.'.$this->connection());
 
+        Log::warning('config ?', [
+            'print_r(config)' => print_r($config, true),
+        ]);
+
         return CloudTasksClient::taskName(
-            project: $config['project'],
-            location: $config['location'],
+            project: $config['project'] ?? 'backend-429006',
+            location: $config['location'] ?? 'europe-west1',
             queue: $this->queue(),
             task: $this->shortTaskName(),
         );
